@@ -53,34 +53,6 @@ class ActionRepository:
             status_code=status.HTTP_201_CREATED)
         return response
 
-    @classmethod
-    async def clear_database(cls) -> JSONResponse:
-        # Elastic clearance
-        await clear_elastic_index()
-
-        # Database clearance
-        await clear_database_table()
-
-        response = JSONResponse(
-            content={
-                "message": f"Database & Elastic index successfully cleared!",
-            },
-            status_code=status.HTTP_200_OK)
-        return response
-
-    @classmethod
-    async def get_amount(cls) -> JSONResponse:
-        index_name, amount_in_index = await get_index_count()
-        table_name, amount_in_table = await get_table_count()
-
-        response = JSONResponse(
-            content={
-                "elastic": f"index (name={index_name}) contains {amount_in_index} items!",
-                "database": f"table (name={table_name}) contains {amount_in_table} items!",
-            },
-            status_code=status.HTTP_200_OK)
-        return response
-
     @staticmethod
     async def search_posts(query: str) -> list_of_posts:
         # Search for text in index and return their ids

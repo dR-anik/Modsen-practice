@@ -6,8 +6,6 @@ from fastapi import HTTPException
 
 __all__ = (
     'put_df_into_elastic',
-    'get_index_count',
-    'clear_elastic_index',
     'delete_post_by_id_from_elastic',
     'search_for_text_in_elastic'
 )
@@ -31,17 +29,6 @@ async def put_df_into_elastic(df: pd.DataFrame) -> None:
                 'text': row['text']
             }
             await es.index(index=index_name, body=document)
-
-
-async def get_index_count(name: str = index_name) -> Tuple[str, int]:
-    """Returns index_name & number of items in index"""
-    response = await es.count(index=name)
-    return name, response['count']
-
-
-async def clear_elastic_index(name: str = index_name) -> str:
-    await es.delete_by_query(index=name, body={"query": {"match_all": {}}})
-    return name
 
 
 async def delete_post_by_id_from_elastic(post_id: str) -> None:

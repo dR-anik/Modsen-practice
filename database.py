@@ -12,8 +12,6 @@ __all__ = (
     'engine',
     'list_of_posts',
     'put_df_into_db',
-    'clear_database_table',
-    'get_table_count',
     'delete_post_by_id_from_database',
     'select_posts_by_ids_from_db',
 )
@@ -42,20 +40,6 @@ async def put_df_into_db(df: pd.DataFrame) -> None:
             )
             session.add(post)
         session.commit()
-
-
-async def clear_database_table(table=Posts) -> None:
-    with Session(engine) as session:
-        session.query(table).delete()
-        session.commit()
-
-
-async def get_table_count(table=Posts) -> Tuple[str, int]:
-    """Returns table_name & number of items in table"""
-    with Session(engine) as session:
-        count = session.query(func.count()).select_from(table).scalar()
-        table_name = table.__tablename__
-        return table_name, count
 
 
 async def delete_post_by_id_from_database(post_id: str) -> None:

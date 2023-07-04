@@ -1,0 +1,24 @@
+version: '3.3'
+services:
+  db:
+    image: postgres:12.0-alpine
+    volumes:
+      - postgres_storage:/var/lib/postgresql/data/
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+
+  elasticsearch:
+    image: elasticsearch:8.8.0
+    volumes:
+      - elastic_storage:/usr/share/elasticsearch/data
+    environment:
+      - xpack.security.enabled=false
+      - discovery.type=single-node
+    ports:
+      - "9200:9200"
+
+volumes:
+  postgres_storage:
+  elastic_storage:

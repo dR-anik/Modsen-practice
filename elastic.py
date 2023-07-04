@@ -1,5 +1,3 @@
-from typing import List, Tuple
-
 import pandas as pd
 from elasticsearch import AsyncElasticsearch
 from fastapi import HTTPException
@@ -21,7 +19,12 @@ es = AsyncElasticsearch(
 index_name = 'posts'
 
 
-async def put_df_into_elastic(df: pd.DataFrame) -> None:
+async def put_df_into_elastic(df: pd.DataFrame):
+    """
+    This function puts dataframe into elastic
+    :param df: pd.DataFrame
+    :return: None
+    """
     async with es:
         for index, row in df.iterrows():
             document = {
@@ -31,7 +34,12 @@ async def put_df_into_elastic(df: pd.DataFrame) -> None:
             await es.index(index=index_name, body=document)
 
 
-async def delete_post_by_id_from_elastic(post_id: str) -> None:
+async def delete_post_by_id_from_elastic(post_id: str):
+    """
+    This function deletes post by their ids from elastic
+    :param post_id: string
+    :return: None
+    """
     async with es:
         response = await es.delete_by_query(
             index=index_name,
@@ -50,8 +58,12 @@ async def delete_post_by_id_from_elastic(post_id: str) -> None:
             )
 
 
-async def search_for_text_in_elastic(query: str) -> List[str]:
-    """Searches for text in posts and returns list of IDs for found posts"""
+async def search_for_text_in_elastic(query: str):
+    """
+    This function searches query into the text in every post and returns list of ids for found posts
+    :param query: string
+    :return: List[str]
+    """
     async with es:
         response = await es.search(
             index=index_name,

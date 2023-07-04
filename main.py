@@ -1,8 +1,8 @@
 from fastapi import FastAPI
-from action import ActionRepository
+from fastapi.responses import PlainTextResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
-from fastapi.responses import JSONResponse, PlainTextResponse
-from database import list_of_posts
+
+from action import ActionRepository
 
 app = FastAPI(
     title="Modsen App"
@@ -20,24 +20,14 @@ async def on_startup():
 
 
 @app.get(
-    "/search/{query}",
-    response_model=list_of_posts,
-    description='Returns 20 last posts, that includes query text',
-    tags=[
-        "Posts"
-    ]
+    "/search/{query}"
 )
-async def _search_posts(query: str) -> list_of_posts:
+async def _search_posts(query: str):
     return await ActionRepository.search_posts(query=query)
 
 
 @app.delete(
-    "/post/{post_id}",
-    response_class=JSONResponse,
-    description='Deletes post from database and index by its ID',
-    tags=[
-        "Posts"
-    ]
+    "/post/{post_id}"
 )
-async def delete_post(post_id: str) -> JSONResponse:
+async def delete_post(post_id: str):
     return await ActionRepository.delete_by_id(post_id=post_id)

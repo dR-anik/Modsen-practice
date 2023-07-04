@@ -16,7 +16,12 @@ __all__ = (
 
 class ActionRepository:
     @classmethod
-    async def startup(cls) -> None:
+    async def startup(cls):
+        """
+        This function executes every application startup, checks if it's the first boot.
+        In that case it fills database and elastic index with data from csv-file
+        :return: None
+        """
         load_dotenv(".env")
         is_first_boot = os.getenv("IS_FIRST_BOOT")
 
@@ -33,7 +38,11 @@ class ActionRepository:
             print("Project initialization finished successfully!")
 
     @classmethod
-    async def fill_database(cls) -> JSONResponse:
+    async def fill_database(cls):
+        """
+        This function fills database and elastic index with data from csv-file
+        :return: JSONResponse
+        """
         # Getting data from .csv
         df = get_data_from_csv('Task/posts.csv')
 
@@ -54,7 +63,12 @@ class ActionRepository:
         return response
 
     @staticmethod
-    async def search_posts(query: str) -> list_of_posts:
+    async def search_posts(query: str):
+        """
+        This function searches the query into the database
+        :param query: string
+        :return: List[Post]
+        """
         # Search for text in index and return their ids
         list_of_ids = await search_for_text_in_elastic(query=query)
 
@@ -64,7 +78,12 @@ class ActionRepository:
         return posts
 
     @staticmethod
-    async def delete_by_id(post_id: str) -> JSONResponse:
+    async def delete_by_id(post_id):
+        """
+        This function deletes posts and elastic index from the database
+        :param post_id: string
+        :return: JSONResponse
+        """
         # Deletion from index
         await delete_post_by_id_from_elastic(post_id=post_id)
 
